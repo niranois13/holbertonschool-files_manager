@@ -1,5 +1,5 @@
-const redisUtil = require('../utils/redis.mjs').default;
-const dbUtil = require('../utils/db.mjs').default;
+const redisUtil = require('../utils/redis').default;
+const dbUtil = require('../utils/db').default;
 
 module.exports = {
   getStatus(req, res) {

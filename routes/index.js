@@ -1,15 +1,15 @@
-const AppController = require('../controllers/AppController.js');
+const AppController = require('../controllers/AppController');
 
-module.exports=function(app) {
-  app.get('/', function(req, res) {
+module.exports = (app) => {
+  app.get('/', (req, res) => {
     res.send('/ called successfully');
   });
 
-  app.get('/status', function(req, res) {
+  app.get('/status', (req, res) => {
     AppController.getStatus(req, res);
   });
 
-  app.get('/stats', function(req, res) {
+  app.get('/stats', (req, res) => {
     AppController.getStats(req, res);
-  })
-}
+  });
+};
