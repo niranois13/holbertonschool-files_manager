@@ -44,6 +44,31 @@ class DBClient {
       return null;
     }
   }
+
+  async findUserByEmail(email) {
+    try {
+      await this.client.connect();
+      const db = this.client.db(this.databaseName);
+      const collection = await db.collection('users');
+      return await collection.findOne({ email });
+    } catch (error) {
+      console.error("Error in findUserByEmail:", error);
+      return null;
+    }
+  }
+
+  async createUser(email, hashedPassword) {
+    try {
+      await this.client.connect();
+      const db = this.client.db(this.databaseName);
+      const collection = db.collection('users');
+      const result = await collection.insertOne({ email, password: hashedPassword });
+      return result.ops[0];
+    } catch (error) {
+      console.error("Error in createUser:", error);
+      return null;
+    }
+  }
 }
 
 const dbClient = new DBClient();
