@@ -15,8 +15,8 @@ class DBClient {
 
   isAlive() {
     try {
-      this.client.connect();
-      return true;
+      const isConnected = this.client.isConnected();
+      return isConnected;
     } catch (error) {
       return false;
     }
