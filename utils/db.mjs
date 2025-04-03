@@ -14,12 +14,7 @@ class DBClient {
   }
 
   isAlive() {
-    try {
-      const isConnected = this.client.isConnected();
-      return isConnected;
-    } catch (error) {
-      return false;
-    }
+      return this.client.isConnected();
   }
 
   async nbUsers() {
