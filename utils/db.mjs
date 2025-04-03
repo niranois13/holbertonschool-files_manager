@@ -1,4 +1,6 @@
-import { MongoClient } from 'mongodb';
+import pkg from 'mongodb';
+
+const { MongoClient } = pkg;
 
 class DBClient {
   constructor() {
@@ -15,9 +17,9 @@ class DBClient {
     try {
       this.client.connect();
       return true;
-    } catch(error) {
+    } catch (error) {
       return false;
-    };
+    }
   }
 
   async nbUsers() {
@@ -27,7 +29,7 @@ class DBClient {
       const collection = db.collection('users');
       const count = await collection.countDocuments();
       return count;
-    } catch(error) {
+    } catch (error) {
       return null;
     }
   }
