@@ -11,15 +11,12 @@ class DBClient {
     this.uri = `mongodb://${host}:${port}`;
     this.databaseName = database;
     this.client = new MongoClient(this.uri, { useUnifiedTopology: true });
+
+    this.client.connect().catch(() => {});
   }
 
   isAlive() {
-    try {
-      this.client.db().command({ ping: 1 });
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return this.client && this.client.topology && this.client.topology.isConnected();
   }
 
   async nbUsers() {
