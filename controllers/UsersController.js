@@ -17,7 +17,7 @@ module.exports = {
 
     const notUniqEmail = await dbClient.findUserByEmail(email);
     if (notUniqEmail) {
-      return res.status(400).json({ error: 'Already exists' });
+      return res.status(400).json({ error: 'Already exist' });
     }
 
     const hashedPassword = sha1(password);
