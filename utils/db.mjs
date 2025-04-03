@@ -15,7 +15,6 @@ class DBClient {
 
   isAlive() {
     try {
-      this.client.connect();
       this.client.db().command({ ping: 1 });
       return true;
     } catch (error) {
