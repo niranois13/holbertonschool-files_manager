@@ -14,7 +14,13 @@ class DBClient {
   }
 
   isAlive() {
-      return this.client.isConnected();
+    try {
+      this.client.connect();
+      this.client.db().command({ ping: 1 });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async nbUsers() {
