@@ -21,22 +21,26 @@ class DBClient {
 
   async nbUsers() {
     try {
+      await this.client.connect();
       const db = this.client.db(this.databaseName);
-      const collection = db.collection('users');
+      const collection = await db.collection('users');
       const count = await collection.countDocuments();
       return count;
     } catch (error) {
+      console.error("Error in nbUsers:", error);
       return null;
     }
   }
 
   async nbFiles() {
     try {
+      await this.client.connect();
       const db = this.client.db(this.databaseName);
-      const collection = db.collection('files');
+      const collection = await db.collection('files');
       const count = await collection.countDocuments();
       return count;
     } catch (error) {
+      console.error("Error in nbUsers:", error);
       return null;
     }
   }
