@@ -19,7 +19,7 @@ class RedisClient {
     this.pingAsync = promisify(this.client.ping).bind(this.client);
   }
 
-  async isAlive() {
+  isAlive() {
       return this.client.connected;
   }
 
