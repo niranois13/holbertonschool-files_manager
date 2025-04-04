@@ -1,7 +1,7 @@
 import pkg from 'mongodb';
 
 const { MongoClient } = pkg;
-const { ObjectId } = require('mongodb');
+const { ObjectId } = pkg;
 
 
 class DBClient {
