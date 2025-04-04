@@ -3,7 +3,6 @@ import pkg from 'mongodb';
 const { MongoClient } = pkg;
 const { ObjectId } = pkg;
 
-
 class DBClient {
   constructor() {
     const host = process.env.DB_HOST || 'localhost';
@@ -29,7 +28,7 @@ class DBClient {
       const count = await collection.countDocuments();
       return count;
     } catch (error) {
-      console.error("Error in nbUsers:", error);
+      console.error('Error in nbUsers:', error);
       return null;
     }
   }
@@ -42,7 +41,7 @@ class DBClient {
       const count = await collection.countDocuments();
       return count;
     } catch (error) {
-      console.error("Error in nbUsers:", error);
+      console.error('Error in nbUsers:', error);
       return null;
     }
   }
@@ -54,7 +53,7 @@ class DBClient {
       const collection = await db.collection('users');
       return await collection.findOne({ email });
     } catch (error) {
-      console.error("Error in findUserByEmail:", error);
+      console.error('Error in findUserByEmail:', error);
       return null;
     }
   }
@@ -64,11 +63,11 @@ class DBClient {
       await this.client.connect();
       const db = this.client.db(this.databaseName);
       const collection = await db.collection('users');
-      console.log("Searching for user with ID:", userId);
+      console.log('Searching for user with ID:', userId);
       const _id = new ObjectId(userId);
       return await collection.findOne({ _id });
     } catch (error) {
-      console.error("Error in findUserById:", error);
+      console.error('Error in findUserById:', error);
       return null;
     }
   }
@@ -81,7 +80,7 @@ class DBClient {
       const result = await collection.insertOne({ email, password: hashedPassword });
       return result.ops[0];
     } catch (error) {
-      console.error("Error in createUser:", error);
+      console.error('Error in createUser:', error);
       return null;
     }
   }

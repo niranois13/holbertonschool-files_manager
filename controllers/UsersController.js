@@ -39,7 +39,7 @@ module.exports = {
 
     const user = await dbClient.findUserById(userId);
     console.log(user);
-    
+
     return res.status(201).json({ id: user._id, email: user.email });
-  }
+  },
 };
