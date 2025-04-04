@@ -1,5 +1,6 @@
 const sha1 = require('sha1');
 const dbClient = require('../utils/db').default;
+const { xTokenHandler } = require('./AuthController');
 
 module.exports = {
   async postNew(req, res) {
@@ -29,4 +30,16 @@ module.exports = {
 
     return res.status(201).json({ id: newUser._id, email: newUser.email });
   },
+
+  async getMe(req, res) {
+    const userId = await xTokenHandler(req, res);
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const user = await dbClient.findUserById(userId);
+    console.log(user);
+    
+    return res.status(201).json({ id: user._id, email: user.email });
+  }
 };

@@ -1,6 +1,8 @@
 import pkg from 'mongodb';
 
 const { MongoClient } = pkg;
+const { ObjectId } = require('mongodb');
+
 
 class DBClient {
   constructor() {
@@ -53,6 +55,20 @@ class DBClient {
       return await collection.findOne({ email });
     } catch (error) {
       console.error("Error in findUserByEmail:", error);
+      return null;
+    }
+  }
+
+  async findUserById(userId) {
+    try {
+      await this.client.connect();
+      const db = this.client.db(this.databaseName);
+      const collection = await db.collection('users');
+      console.log("Searching for user with ID:", userId);
+      const _id = new ObjectId(userId);
+      return await collection.findOne({ _id });
+    } catch (error) {
+      console.error("Error in findUserById:", error);
       return null;
     }
   }
