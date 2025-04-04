@@ -63,7 +63,6 @@ class DBClient {
       await this.client.connect();
       const db = this.client.db(this.databaseName);
       const collection = await db.collection('users');
-      console.log('Searching for user with ID:', userId);
       const _id = new ObjectId(userId);
       return await collection.findOne({ _id });
     } catch (error) {

@@ -32,14 +32,17 @@ module.exports = {
   },
 
   async getMe(req, res) {
-    const userId = await xTokenHandler(req, res);
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    try {
+      const userId = await xTokenHandler(req, res);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const user = await dbClient.findUserById(userId);
+
+      return res.status(201).json({ id: user._id, email: user.email });
+    } catch (error) {
+      console.error('Error in getMe:', error);
     }
-
-    const user = await dbClient.findUserById(userId);
-    console.log(user);
-
-    return res.status(201).json({ id: user._id, email: user.email });
   },
 };
