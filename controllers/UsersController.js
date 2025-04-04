@@ -39,10 +39,14 @@ module.exports = {
       }
 
       const user = await dbClient.findUserById(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-      return res.status(201).json({ id: user._id, email: user.email });
+      return res.status(200).json({ id: user._id, email: user.email });
     } catch (error) {
       console.error('Error in getMe:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 };
