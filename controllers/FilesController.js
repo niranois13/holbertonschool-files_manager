@@ -7,7 +7,7 @@ const dbClient = require('../utils/db').default;
 module.exports = {
   async contentTypeHandler(req) {
     try {
-      if (!req.is('application/json')) {
+      if (!req.is('application/json')  && !req.is('json')) {
         throw new Error('Invalid Content-Type');
       }
       return req.body;
