@@ -102,7 +102,7 @@ module.exports = {
         name: content.name,
         type: content.type,
         isPublic: content.isPublic,
-        parentId: content.parentId,
+        parentId: content.parentId.toString(),
       });
     } catch (error) {
       console.error('Error in postUpload:', error);
