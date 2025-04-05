@@ -7,7 +7,7 @@ const dbClient = require('../utils/db').default;
 module.exports = {
   async contentTypeHandler(req) {
     try {
-      if (!req.is('application/json')  && !req.is('json')) {
+      if (!req.is('application/json') && !req.is('json')) {
         throw new Error('Invalid Content-Type');
       }
       return req.body;
@@ -30,7 +30,7 @@ module.exports = {
       return filePath;
     } catch (error) {
       console.error('Error saving file to disk:', error);
-      return null;
+      throw new Error('Error saving file to disk');
     }
   },
 
@@ -56,7 +56,7 @@ module.exports = {
 
       const acceptedTypes = ['folder', 'file', 'image'];
       if (!acceptedTypes.includes(content.type)) {
-        return res.status(400).json({ error: 'Missing type' });
+        return res.status(400).json({ error: 'Invalid type' });
       }
 
       if (!content.parentId) {
@@ -78,23 +78,13 @@ module.exports = {
         }
       }
 
-      if (!content.isPublic) {
+      if (typeof content.isPublic !== 'boolean') {
         content.isPublic = false;
       }
 
       const dataTypes = ['file', 'image'];
       if (!content.data && dataTypes.includes(content.type)) {
         return res.status(400).json({ error: 'Missing data' });
-      }
-
-      if (typeof content.isPublic !== 'boolean') {
-        return res.status(400).json({ error: 'isPublic must be true or false' });
-      }
-
-      content.owner = userId;
-      if (typeof userId !== 'string') {
-        console.error('Invalid userId:', userId);
-        return res.status(401).json({ error: 'Unauthorized' });
       }
 
       if (content.type !== 'folder') {
@@ -107,48 +97,41 @@ module.exports = {
         content.localPath = filePath;
       }
 
+      content.owner = userId;
+      if (typeof userId !== 'string') {
+        console.error('Invalid userId:', userId);
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
       const fileToInsert = {
         name: content.name,
         type: content.type,
         isPublic: content.isPublic,
         parentId: content.parentId,
         owner: content.owner,
+        localPath: content.localPath,
       };
-
-      if (content.localPath) {
-        fileToInsert.localPath = content.localPath;
-      }
 
       console.log('Preparing to insert into DB:', fileToInsert);
 
-      try {
-        const newFile = await dbClient.createFile(fileToInsert);
-        if (!newFile) {
-          console.error('createFile returned null');
-          return res.status(500).json({ error: 'DB insertion returned null' });
-        }
-        console.log('fileToInsert:', fileToInsert);
-        console.log('typeof owner:', typeof fileToInsert.owner);
-        const newFileId = newFile.id || newFile._id;
-        const parentId = content.parentId.toString();
-        console.log('File inserted in DB:', newFile);
-        return (res.status(201).json({
-          id: newFileId,
-          userId: content.owner,
-          name: content.name,
-          type: content.type,
-          isPublic: content.isPublic,
-          parentId: parentId,
-        }),
-        res.end(),
-        console.log('Final request sent'));
-      } catch (error) {
-        console.error('DB insertion failed:', error);
-        return res.status(500).json({ error: 'Failed to create file record in DB' });
+      const newFile = await dbClient.createFile(fileToInsert);
+      if (!newFile) {
+        console.error('createFile returned null');
+        return res.status(500).json({ error: 'DB insertion returned null' });
       }
+
+      console.log('File inserted into DB:', newFile);
+      return res.status(201).json({
+        id: newFile.id || newFile._id,
+        userId: newFile.owner,
+        name: newFile.name,
+        type: newFile.type,
+        isPublic: newFile.isPublic,
+        parentId: newFile.parentId.toString(),
+      });
     } catch (error) {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
+  },
 };
