@@ -36,15 +36,19 @@ module.exports = {
 
   async postUpload(req, res) {
     try {
+      console.log('Checking user token...');
       const userId = await xTokenHandler(req, res);
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
+      console.log('User authorized:', userId);
 
+      console.log('Handling content...');
       const content = await this.contentTypeHandler(req);
       if (!content) {
         return res.status(400).json({ error: 'Missing content' });
       }
+      console.log('Incoming content:', content);
 
       if (!content.name) {
         return res.status(400).json({ error: 'Missing name' });
@@ -57,8 +61,10 @@ module.exports = {
 
       if (!content.parentId) {
         content.parentId = '0';
+        console.log('No parentId provided, defaulting to root (0)');
       } else {
         try {
+          console.log('Looking up parent folder:', content.parentId);
           const parentObject = await dbClient.findFileById(content.parentId);
           if (!parentObject) {
             return res.status(400).json({ error: 'Parent not found' });
@@ -67,7 +73,7 @@ module.exports = {
             return res.status(400).json({ error: 'Parent is not a folder' });
           }
         } catch (error) {
-          console.error('Error while searching for Parent:', error);
+          console.error('Error while searching for parent:', error);
           return res.status(500).json({ error: 'Internal server error' });
         }
       }
@@ -88,10 +94,12 @@ module.exports = {
       content.owner = userId;
 
       if (content.type !== 'folder') {
+        console.log('Saving file to disk...');
         const filePath = await this.saveToDisk(content.data);
         if (!filePath) {
           return res.status(500).json({ error: 'Failed to save file on disk' });
         }
+        console.log('File saved to:', filePath);
         content.localPath = filePath;
       }
 
@@ -107,12 +115,17 @@ module.exports = {
         fileToInsert.localPath = content.localPath;
       }
 
+      console.log('Preparing to insert into DB:', fileToInsert);
+
       let newFile;
       try {
         newFile = await dbClient.createFile(fileToInsert);
+        console.log('File inserted in DB:', newFile);
       } catch (error) {
-        throw error;
+        console.error('DB insertion failed:', error);
+        return res.status(500).json({ error: 'Failed to create file record in DB' });
       }
+
       return res.status(201).json({
         id: newFile._id,
         userId: content.owner,
@@ -125,5 +138,5 @@ module.exports = {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  },
+  }
 };
