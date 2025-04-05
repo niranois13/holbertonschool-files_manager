@@ -117,23 +117,21 @@ module.exports = {
 
       console.log('Preparing to insert into DB:', fileToInsert);
 
-      let newFile;
       try {
-        newFile = await dbClient.createFile(fileToInsert);
+        const newFile = await dbClient.createFile(fileToInsert);
         console.log('File inserted in DB:', newFile);
+        return res.status(201).json({
+          id: newFile._id.toString(),
+          userId: content.owner,
+          name: content.name,
+          type: content.type,
+          isPublic: content.isPublic,
+          parentId: content.parentId.toSting(),
+        });
       } catch (error) {
         console.error('DB insertion failed:', error);
         return res.status(500).json({ error: 'Failed to create file record in DB' });
       }
-
-      return res.status(201).json({
-        id: newFile._id,
-        userId: content.owner,
-        name: content.name,
-        type: content.type,
-        isPublic: content.isPublic,
-        parentId: content.parentId,
-      });
     } catch (error) {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
