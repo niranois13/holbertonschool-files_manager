@@ -79,7 +79,7 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const result = await files.insertOne(fileData);
-      return ({ _id: result.insertedId, ...fileData });
+      return { _id: result.insertedId, ...fileData };
     } catch (error) {
       console.error('Error in createFile:', error);
       return null;

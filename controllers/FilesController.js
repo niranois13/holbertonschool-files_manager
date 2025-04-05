@@ -92,6 +92,10 @@ module.exports = {
       }
 
       content.owner = userId;
+      if (typeof userId !== 'string') {
+        console.error('Invalid userId:', userId);
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
 
       if (content.type !== 'folder') {
         console.log('Saving file to disk...');
@@ -119,6 +123,12 @@ module.exports = {
 
       try {
         const newFile = await dbClient.createFile(fileToInsert);
+        if (!newFile) {
+          console.error('createFile returned null');
+          return res.status(500).json({ error: 'DB insertion returned null' });
+        }
+        console.log('fileToInsert:', fileToInsert);
+        console.log('typeof owner:', typeof fileToInsert.owner);
         const newFileId = newFile._id.toString();
         const parentId = content.parentId.toString();
         console.log('File inserted in DB:', newFile);
