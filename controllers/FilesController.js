@@ -57,6 +57,16 @@ module.exports = {
 
       if (!content.parentId) {
         content.parentId = 0;
+        const rootFolder = await dbClient.findFileById(content.parentId);
+        if (!rootFolder) {
+          const newRootFolder = await dbClient.createFile({
+            name: 'Root Folder',
+            type: 'folder',
+            parentId: 0,
+            isPublic: false,
+            owner: userId,
+          });
+          content.parentId = newRootFolder._id;
       } else {
         try {
           const parentObject = await dbClient.findFileById(content.parentId);
@@ -97,12 +107,12 @@ module.exports = {
 
       const newFile = await dbClient.createFile(content);
       return res.status(201).json({
-        id: newFile._id.toString(),
+        id: newFile._id,
         userId: content.owner,
         name: content.name,
         type: content.type,
         isPublic: content.isPublic,
-        parentId: content.parentId.toString(),
+        parentId: content.parentId,
       });
     } catch (error) {
       console.error('Error in postUpload:', error);
