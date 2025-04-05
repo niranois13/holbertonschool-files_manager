@@ -119,14 +119,16 @@ module.exports = {
 
       try {
         const newFile = await dbClient.createFile(fileToInsert);
+        const newFileId = newFile._id.toString();
+        const parentId = content.parentId.toString();
         console.log('File inserted in DB:', newFile);
         return res.status(201).json({
-          id: newFile._id.toString(),
+          id: newFileId,
           userId: content.owner,
           name: content.name,
           type: content.type,
           isPublic: content.isPublic,
-          parentId: content.parentId.toSting(),
+          parentId: parentId,
         });
       } catch (error) {
         console.error('DB insertion failed:', error);
