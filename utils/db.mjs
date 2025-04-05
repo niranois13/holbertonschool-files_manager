@@ -1,7 +1,6 @@
 import pkg from 'mongodb';
 
-const { MongoClient } = pkg;
-const { ObjectId } = pkg;
+const { MongoClient, ObjectId } = pkg;
 
 class DBClient {
   constructor() {
@@ -12,21 +11,22 @@ class DBClient {
     this.uri = `mongodb://${host}:${port}`;
     this.databaseName = database;
     this.client = new MongoClient(this.uri, { useUnifiedTopology: true });
-
-    this.client.connect().catch(() => {});
+    this.connected = this.client.connect().catch(() => {});
   }
 
   isAlive() {
     return this.client && this.client.topology && this.client.topology.isConnected();
   }
 
+  async _getCollection(collectionName) {
+    await this.connected;
+    return this.client.db(this.databaseName).collection(collectionName);
+  }
+
   async nbUsers() {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = await db.collection('users');
-      const count = await collection.countDocuments();
-      return count;
+      const users = await this._getCollection('users');
+      return await users.countDocuments();
     } catch (error) {
       console.error('Error in nbUsers:', error);
       return null;
@@ -35,11 +35,8 @@ class DBClient {
 
   async nbFiles() {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = await db.collection('files');
-      const count = await collection.countDocuments();
-      return count;
+      const files = await this._getCollection('files');
+      return await files.countDocuments();
     } catch (error) {
       console.error('Error in nbUsers:', error);
       return null;
@@ -48,10 +45,8 @@ class DBClient {
 
   async findUserByEmail(email) {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = await db.collection('users');
-      return await collection.findOne({ email });
+      const users = await this._getCollection('users');
+      return await users.findOne({ email });
     } catch (error) {
       console.error('Error in findUserByEmail:', error);
       return null;
@@ -60,11 +55,9 @@ class DBClient {
 
   async findUserById(userId) {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = await db.collection('users');
+      const users = await this._getCollection('users');
       const _id = new ObjectId(userId);
-      return await collection.findOne({ _id });
+      return await users.findOne({ _id });
     } catch (error) {
       console.error('Error in findUserById:', error);
       return null;
@@ -73,13 +66,35 @@ class DBClient {
 
   async createUser(email, hashedPassword) {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = db.collection('users');
-      const result = await collection.insertOne({ email, password: hashedPassword });
-      return result.ops[0];
+      const users = await this._getCollection('users');
+      const result = await users.insertOne({ email, password: hashedPassword });
+      return { id: result.insertedId, email };
     } catch (error) {
       console.error('Error in createUser:', error);
+      return null;
+    }
+  }
+
+  async createFile(fileData) {
+    try {
+      const files = await this._getCollection('files');
+      const result = await files.insertOne(fileData);
+      return ({ _id: result.insertedId, ...fileData });
+    } catch (error) {
+      console.error('Error in createFile:', error);
+      return null;
+    }
+  }
+
+  async findFileById(fileId) {
+    try {
+      await this.client.connect();
+      const db = this.client.db(this.databaseName);
+      const collection = db.collection('files');
+      const _id = new ObjectId(fileId);
+      return await collection.findOne({ _id });
+    } catch (error) {
+      console.error('Error in findFileById:', error);
       return null;
     }
   }
