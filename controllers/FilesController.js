@@ -129,7 +129,7 @@ module.exports = {
         }
         console.log('fileToInsert:', fileToInsert);
         console.log('typeof owner:', typeof fileToInsert.owner);
-        const newFileId = newFile._id.toString();
+        const newFileId = newFile.id || newFile._id;
         const parentId = content.parentId.toString();
         console.log('File inserted in DB:', newFile);
         return res.status(201).json({
