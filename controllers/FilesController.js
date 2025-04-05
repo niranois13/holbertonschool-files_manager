@@ -34,31 +34,6 @@ module.exports = {
     }
   },
 
-  async createFolderEntry({ name, owner, parentId = 0, isPublic = false }) {
-    const folderData = {
-      name,
-      type: 'folder',
-      isPublic,
-      parentId,
-      owner,
-    };
-
-    try {
-      const newFolder = await dbClient.createFile(folderData);
-      return {
-        id: newFolder._id,
-        userId: newFolder.owner,
-        name: newFolder.name,
-        type: newFolder.type,
-        isPublic: newFolder.isPublic,
-        parentId: newFolder.parentId,
-      };
-    } catch (error) {
-      console.error('Error in createFolderEntry:', error);
-      return null;
-    }
-  },
-
   async postUpload(req, res) {
     try {
       const userId = await xTokenHandler(req, res);
@@ -118,24 +93,6 @@ module.exports = {
           return res.status(500).json({ error: 'Failed to save file on disk' });
         }
         content.localPath = filePath;
-      } else {
-        try {
-          const folderResponse = await createFolderEntry({
-            name: content.name,
-            owner: userId,
-            parentId: content.parentId,
-            isPublic: content.isPublic,
-          });
-
-          if (!folderResponse) {
-            return res.status(500).json({ error: 'Could not create folder' });
-          }
-
-          return res.status(201).json(folderResponse);
-        } catch (error) {
-          console.error('Error in folder creation:', error);
-          throw error;
-        }
       }
 
       const newFile = await dbClient.createFile(content);
