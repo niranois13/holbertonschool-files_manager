@@ -97,7 +97,7 @@ module.exports = {
 
       const newFile = await dbClient.createFile(content);
       return res.status(201).json({
-        id: newFile._id,
+        id: newFile._id.toString(),
         userId: content.owner,
         name: content.name,
         type: content.type,
