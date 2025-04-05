@@ -57,21 +57,6 @@ module.exports = {
 
       if (!content.parentId) {
         content.parentId = 0;
-        try {
-          const rootFolder = await dbClient.findFileById(content.parentId);
-          if (!rootFolder) {
-            const newRootFolder = await dbClient.createFile({
-              name: 'Root Folder',
-              type: 'folder',
-              parentId: 0,
-              isPublic: false,
-              owner: userId,
-          });
-          content.parentId = newRootFolder._id;
-        }
-        } catch (error) {
-          throw error;
-        };
       } else {
         try {
           const parentObject = await dbClient.findFileById(content.parentId);
