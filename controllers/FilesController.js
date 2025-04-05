@@ -56,7 +56,7 @@ module.exports = {
       }
 
       if (!content.parentId) {
-        content.parentId = 0;
+        content.parentId = '0';
       } else {
         try {
           const parentObject = await dbClient.findFileById(content.parentId);
