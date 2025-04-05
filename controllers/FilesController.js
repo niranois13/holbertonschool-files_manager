@@ -132,14 +132,16 @@ module.exports = {
         const newFileId = newFile.id || newFile._id;
         const parentId = content.parentId.toString();
         console.log('File inserted in DB:', newFile);
-        return res.status(201).json({
+        return (res.status(201).json({
           id: newFileId,
           userId: content.owner,
           name: content.name,
           type: content.type,
           isPublic: content.isPublic,
           parentId: parentId,
-        }).end();
+        }),
+        res.end(),
+        console.log('Final request sent'));
       } catch (error) {
         console.error('DB insertion failed:', error);
         return res.status(500).json({ error: 'Failed to create file record in DB' });
