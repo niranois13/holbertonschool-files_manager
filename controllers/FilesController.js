@@ -119,18 +119,23 @@ module.exports = {
         }
         content.localPath = filePath;
       } else {
-        const folderResponse = await createFolderEntry({
-          name: content.name,
-          owner: userId,
-          parentId: content.parentId,
-          isPublic: content.isPublic,
-        });
+        try {
+          const folderResponse = await createFolderEntry({
+            name: content.name,
+            owner: userId,
+            parentId: content.parentId,
+            isPublic: content.isPublic,
+          });
 
-        if (!folderResponse) {
-          return res.status(500).json({ error: 'Could not create folder' });
+          if (!folderResponse) {
+            return res.status(500).json({ error: 'Could not create folder' });
+          }
+
+          return res.status(201).json(folderResponse);
+        } catch (error) {
+          console.error('Error in folder creation:', error);
+          throw error;
         }
-
-        return res.status(201).json(folderResponse);
       }
 
       const newFile = await dbClient.createFile(content);
