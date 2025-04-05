@@ -107,7 +107,12 @@ module.exports = {
         fileToInsert.localPath = content.localPath;
       }
 
-      const newFile = await dbClient.createFile(fileToInsert);
+      let newFile;
+      try {
+        newFile = await dbClient.createFile(fileToInsert);
+      } catch (error) {
+        throw error;
+      }
       return res.status(201).json({
         id: newFile._id,
         userId: content.owner,
