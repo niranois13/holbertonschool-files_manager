@@ -95,7 +95,19 @@ module.exports = {
         content.localPath = filePath;
       }
 
-      const newFile = await dbClient.createFile(content);
+      const fileToInsert = {
+        name: content.name,
+        type: content.type,
+        isPublic: content.isPublic,
+        parentId: content.parentId,
+        owner: content.owner,
+      };
+
+      if (content.localPath) {
+        fileToInsert.localPath = content.localPath;
+      }
+
+      const newFile = await dbClient.createFile(fileToInsert);
       return res.status(201).json({
         id: newFile._id,
         userId: content.owner,
