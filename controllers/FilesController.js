@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const { xTokenHandler } = require('./AuthController');
 const dbClient = require('../utils/db').default;
 
@@ -9,16 +12,12 @@ module.exports = {
       }
       return req.body;
     } catch (error) {
-      console.error("Error in contentTypeHandler:", error.message);
+      console.error('Error in contentTypeHandler:', error.message);
       return null;
     }
   },
 
   async saveToDisk(data) {
-    const fs = require('fs');
-    const path = require('path');
-    const { v4: uuidv4 } = require('uuid');
-
     const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
 
     try {
@@ -64,12 +63,12 @@ module.exports = {
           if (!parentObject) {
             return res.status(400).json({ error: 'Parent not found' });
           }
-          if (parentObject.type != 'folder') {
+          if (parentObject.type !== 'folder') {
             return res.status(400).json({ error: 'Parent is not a folder' });
           }
         } catch (error) {
           console.error('Error while searching for Parent:', error);
-          return res.status(500).json({ error: 'Internal server error'});
+          return res.status(500).json({ error: 'Internal server error' });
         }
       }
 
@@ -82,13 +81,13 @@ module.exports = {
         return res.status(400).json({ error: 'Missing data' });
       }
 
-      if (typeof content.isPublic !== "boolean") {
+      if (typeof content.isPublic !== 'boolean') {
         return res.status(400).json({ error: 'isPublic must be true or false' });
       }
 
       content.owner = userId;
 
-      if (content.type != 'folder') {
+      if (content.type !== 'folder') {
         const filePath = await this.saveToDisk(content.data);
         if (!filePath) {
           return res.status(500).json({ error: 'Failed to save file on disk' });
@@ -96,21 +95,18 @@ module.exports = {
         content.localPath = filePath;
       }
 
-      try {
-        const newFile = await dbClient.createFile(content);
-        return res.status(201).json({ id: newFile._id,
-          userId: content.owner,
-          name: content.name,
-          type: content.type,
-          isPublic: content.isPublic,
-          parentId: content.parentId });
-      } catch (error) {
-        console.error('Error while creating a new file:', error);
-      }
-
+      const newFile = await dbClient.createFile(content);
+      return res.status(201).json({
+        id: newFile._id,
+        userId: content.owner,
+        name: content.name,
+        type: content.type,
+        isPublic: content.isPublic,
+        parentId: content.parentId,
+      });
     } catch (error) {
-      console.error("Error in postUpload:", error);
+      console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
-}
+  },
+};
