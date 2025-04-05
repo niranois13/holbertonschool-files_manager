@@ -139,7 +139,7 @@ module.exports = {
           type: content.type,
           isPublic: content.isPublic,
           parentId: parentId,
-        });
+        }).end();
       } catch (error) {
         console.error('DB insertion failed:', error);
         return res.status(500).json({ error: 'Failed to create file record in DB' });
