@@ -155,4 +155,34 @@ module.exports = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  async getShow(req, res) {
+    try{
+      console.log('getShow - Checking user token...');
+      const userId = await xTokenHandler(req, res);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      console.log('gestShow - User authorized:', userId);
+      const fileId = req.params.id;
+      console.log('getShow - fileId:', fileId, 'userId:', userId);
+      const userFile = await dbClient.findFileByUserAndId(fileId, userId);
+      if (!userFile) {
+        console.log('getShow - userFile:', userFile);
+        return res.status(404).json({ error: 'Not found' });
+      }
+      console.log('getShow - userFiles:', userFile);
+      return res.status(201).json({
+        id: userFile.id,
+        userId: userFile.userId,
+        name: userFile.name,
+        type: userFile.type,
+        isPublic: userFile.isPublic,
+        parentId: userFile.parentId
+      });
+    } catch (error) {
+      console.error('Error in getShow:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 };

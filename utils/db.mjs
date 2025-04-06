@@ -112,13 +112,41 @@ class DBClient {
 
   async findFileById(fileId) {
     try {
-      await this.client.connect();
-      const db = this.client.db(this.databaseName);
-      const collection = db.collection('files');
+      const files = await this._getCollection('files');
       const _id = new ObjectId(fileId);
-      return await collection.findOne({ _id });
+      return await files.findOne({ _id });
     } catch (error) {
       console.error('Error in findFileById:', error);
+      return null;
+    }
+  }
+
+  async findFilesByUserId(userId) {
+    try {
+      const files = await this._getCollection('files');
+      return await files.find({ userId }).toArray();
+    } catch (error) {
+      console.error('Error in findFileByUserId:', error);
+      return null;
+    }
+  }
+
+  async findFileByUserAndId(fileId, reqUserId) {
+    try {
+      const files = await this._getCollection('files');
+      const _id = new ObjectId(fileId);
+      const userId = new ObjectId(reqUserId);
+      const result = await files.findOne({ _id, userId })
+      return {
+        id: result._id,
+        userId: result.userId,
+        name: result.name,
+        type: result.type,
+        isPublic: result.isPublic,
+        parentId: result.parentId
+      };
+    } catch (error) {
+      console.error('Error in findFileByUserAndId:', error);
       return null;
     }
   }
