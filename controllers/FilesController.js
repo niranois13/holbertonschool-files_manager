@@ -61,7 +61,7 @@ module.exports = {
       }
 
       if (!content.parentId) {
-        content.parentId = 0;
+        content.parentId = "0";
         console.log('No parentId provided, defaulting to root (0)');
       } else {
         try {
