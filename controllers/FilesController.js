@@ -125,7 +125,7 @@ module.exports = {
         console.log('File inserted into DB:', newFile);
 
         return res.status(201).json({
-          id: newFile.id || newFile._id,
+          id: newFile._id,
           userId: newFile.userId,
           name: newFile.name,
           type: newFile.type,
@@ -143,7 +143,7 @@ module.exports = {
       const newFolder = await dbClient.createFolder(folderToInsert);
 
       return res.status(201).json({
-        id: newFolder.id || newFolder._id,
+        id: newFolder._id,
         userId: newFolder.userId,
         name: newFolder.name,
         type: newFolder.type,

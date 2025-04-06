@@ -98,11 +98,12 @@ class DBClient {
       const files = await this._getCollection('files');
       const result = await files.insertOne(folderData);
       return {
-        _id: result.insertedId,
+        _id: result.insertedId.toString(),
         userId: folderData.userId,
         name: folderData.name,
         type: folderData.type,
-        parentId: folderData.parentId,
+        parentId: folderData.parentId.toString(),
+        isPublic: false,
       };
     } catch (error) {
       console.error('Error in createFolder:', error);
