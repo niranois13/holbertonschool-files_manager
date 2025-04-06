@@ -145,7 +145,7 @@ module.exports = {
         userId: newFolder.userId,
         name: newFolder.name,
         type: newFolder.type,
-        isPublic: newFolder.isPublic,
+        isPublic: false,
         parentId: newFolder.parentId.toString(),
       });
     } catch (error) {
