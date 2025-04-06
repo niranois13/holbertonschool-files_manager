@@ -65,7 +65,7 @@ module.exports = {
         console.log('No parentId provided, defaulting to root (0)');
       }
 
-      if (content.parentId !== '0') {
+      if (content.parentId !== 0) {
         try {
           console.log('Looking up parent folder:', content.parentId);
           const parentObject = await dbClient.findFileById(content.parentId);
@@ -130,7 +130,7 @@ module.exports = {
           name: newFile.name,
           type: newFile.type,
           isPublic: newFile.isPublic,
-          parentId: newFile.parentId.toString(),
+          parentId: newFile.parentId,
         });
       }
       const folderToInsert = {
@@ -148,7 +148,7 @@ module.exports = {
         name: newFolder.name,
         type: newFolder.type,
         isPublic: false,
-        parentId: newFolder.parentId.toString(),
+        parentId: newFolder.parentId,
       });
     } catch (error) {
       console.error('Error in postUpload:', error);

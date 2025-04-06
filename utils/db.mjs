@@ -98,11 +98,11 @@ class DBClient {
       const files = await this._getCollection('files');
       const result = await files.insertOne(folderData);
       return {
-        _id: result.insertedId.toString(),
+        _id: result.insertedId,
         userId: folderData.userId,
         name: folderData.name,
         type: folderData.type,
-        parentId: folderData.parentId.toString(),
+        parentId: folderData.parentId,
         isPublic: false,
       };
     } catch (error) {
