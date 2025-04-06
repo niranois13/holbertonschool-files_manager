@@ -61,7 +61,7 @@ module.exports = {
       }
 
       if (!content.parentId) {
-        content.parentId = "0";
+        content.parentId = '0';
         console.log('No parentId provided, defaulting to root (0)');
       } else {
         try {
@@ -130,26 +130,24 @@ module.exports = {
           isPublic: newFile.isPublic,
           parentId: newFile.parentId.toString(),
         });
-
-      } else {
-        const folderToInsert = {
-          name: content.name,
-          type: content.type,
-          parentId: content.parentId,
-          userId: content.userId,
-        };
-        console.log('Preparing to insert into DB:', folderToInsert);
-        const newFolder = await dbClient.createFolder(folderToInsert);
-
-        return res.status(201).json({
-          id: newFolder.id || newFolder._id,
-          userId: newFolder.userId,
-          name: newFolder.name,
-          type: newFolder.type,
-          isPublic: newFolder.isPublic,
-          parentId: newFolder.parentId.toString(),
-        });
       }
+      const folderToInsert = {
+        name: content.name,
+        type: content.type,
+        parentId: content.parentId,
+        userId: content.userId,
+      };
+      console.log('Preparing to insert into DB:', folderToInsert);
+      const newFolder = await dbClient.createFolder(folderToInsert);
+
+      return res.status(201).json({
+        id: newFolder.id || newFolder._id,
+        userId: newFolder.userId,
+        name: newFolder.name,
+        type: newFolder.type,
+        isPublic: newFolder.isPublic,
+        parentId: newFolder.parentId.toString(),
+      });
     } catch (error) {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
