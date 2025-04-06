@@ -81,14 +81,31 @@ class DBClient {
       const result = await files.insertOne(fileData);
       return {
         _id: result.insertedId,
+        userId: fileData.userId,
         name: fileData.name,
         type: fileData.type,
         isPublic: fileData.isPublic,
         parentId: fileData.parentId,
-        userId: fileData.userId,
       };
     } catch (error) {
       console.error('Error in createFile:', error);
+      return null;
+    }
+  }
+
+  async createFolder(folderData) {
+    try {
+      const files = await this._getCollection('files');
+      const result = await files.insertOne(folderData);
+      return {
+        _id: result.insertedId,
+        userId: folderData.userId,
+        name: folderData.name,
+        type: folderData.type,
+        parentId: folderData.parentId,
+      };
+    } catch (error) {
+      console.error('Error in createFolder:', error);
       return null;
     }
   }

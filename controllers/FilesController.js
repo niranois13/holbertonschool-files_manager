@@ -88,6 +88,13 @@ module.exports = {
         return res.status(400).json({ error: 'Missing data' });
       }
 
+      try {
+        content.userId = new ObjectId(userId);
+      } catch (err) {
+        console.error('Invalid userId format:', userId);
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
       if (content.type !== 'folder') {
         console.log('Saving file to disk...');
         const filePath = await this.saveToDisk(content.data);
@@ -96,41 +103,53 @@ module.exports = {
         }
         console.log('File saved to:', filePath);
         content.localPath = filePath;
+
+        const fileToInsert = {
+          name: content.name,
+          type: content.type,
+          isPublic: content.isPublic,
+          parentId: content.parentId,
+          userId: content.userId,
+          localPath: content.localPath,
+        };
+
+        console.log('Preparing to insert into DB:', fileToInsert);
+        const newFile = await dbClient.createFile(fileToInsert);
+        if (!newFile) {
+          console.error('createFile returned null');
+          return res.status(500).json({ error: 'DB insertion returned null' });
+        }
+
+        console.log('File inserted into DB:', newFile);
+
+        return res.status(201).json({
+          id: newFile.id || newFile._id,
+          userId: newFile.userId,
+          name: newFile.name,
+          type: newFile.type,
+          isPublic: newFile.isPublic,
+          parentId: newFile.parentId.toString(),
+        });
+
+      } else {
+        const folderToInsert = {
+          name: content.name,
+          type: content.type,
+          parentId: content.parentId,
+          userId: content.userId,
+        };
+        console.log('Preparing to insert into DB:', folderToInsert);
+        const newFolder = await dbClient.createFolder(folderToInsert);
+
+        return res.status(201).json({
+          id: newFolder.id || newFolder._id,
+          userId: newFolder.userId,
+          name: newFolder.name,
+          type: newFolder.type,
+          isPublic: newFolder.isPublic,
+          parentId: newFolder.parentId.toString(),
+        });
       }
-
-      try {
-        content.userId = new ObjectId(userId);
-      } catch (err) {
-        console.error('Invalid userId format:', userId);
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-
-      const fileToInsert = {
-        name: content.name,
-        type: content.type,
-        isPublic: content.isPublic,
-        parentId: content.parentId,
-        userId: content.userId,
-        localPath: content.localPath,
-      };
-
-      console.log('Preparing to insert into DB:', fileToInsert);
-
-      const newFile = await dbClient.createFile(fileToInsert);
-      if (!newFile) {
-        console.error('createFile returned null');
-        return res.status(500).json({ error: 'DB insertion returned null' });
-      }
-
-      console.log('File inserted into DB:', newFile);
-      return res.status(201).json({
-        id: newFile.id || newFile._id,
-        userId: newFile.userId,
-        name: newFile.name,
-        type: newFile.type,
-        isPublic: newFile.isPublic,
-        parentId: newFile.parentId.toString(),
-      });
     } catch (error) {
       console.error('Error in postUpload:', error);
       return res.status(500).json({ error: 'Internal Server Error' });

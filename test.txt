@@ -1,0 +1,2 @@
+{ "_id" : ObjectId("5f1e881cc7ba06511e683b23"), "userId" : ObjectId("5f1e7cda04a394508232559d"), "name" : "images", "type" : "folder", "parentId" : "0" }
+{ "_id" : ObjectId("67f24ddc0ac433dc42d5f4ca"), "name" : "images", "type" : "folder", "isPublic" : false, "parentId" : 0, "userId" : ObjectId("67eea96d0d4b6dfaaf81e8db"), "localPath" : null }
