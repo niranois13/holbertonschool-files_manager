@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { xTokenHandler } = require('./AuthController');
+const { ObjectId } = require('mongodb');
 const dbClient = require('../utils/db').default;
 
 module.exports = {
@@ -97,9 +98,10 @@ module.exports = {
         content.localPath = filePath;
       }
 
-      content.owner = userId;
-      if (typeof userId !== 'string') {
-        console.error('Invalid userId:', userId);
+      try {
+        content.userId = new ObjectId(userId);
+      } catch (err) {
+        console.error('Invalid userId format:', userId);
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
@@ -108,7 +110,7 @@ module.exports = {
         type: content.type,
         isPublic: content.isPublic,
         parentId: content.parentId,
-        owner: content.owner,
+        userId: content.userId,
         localPath: content.localPath,
       };
 
@@ -123,7 +125,7 @@ module.exports = {
       console.log('File inserted into DB:', newFile);
       return res.status(201).json({
         id: newFile.id || newFile._id,
-        userId: newFile.owner,
+        userId: newFile.userId,
         name: newFile.name,
         type: newFile.type,
         isPublic: newFile.isPublic,
