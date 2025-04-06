@@ -7,7 +7,7 @@ const dbClient = require('../utils/db').default;
 module.exports = {
   async contentTypeHandler(req) {
     try {
-      if (!req.is('application/json') && !req.is('json')) {
+      if (!req.is('application/json')) {
         throw new Error('Invalid Content-Type');
       }
       return req.body;
@@ -60,7 +60,7 @@ module.exports = {
       }
 
       if (!content.parentId) {
-        content.parentId = '0';
+        content.parentId = 0;
         console.log('No parentId provided, defaulting to root (0)');
       } else {
         try {

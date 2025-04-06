@@ -84,7 +84,7 @@ class DBClient {
         name: fileData.name,
         type: fileData.type,
         isPublic: fileData.isPublic,
-        parentId: fileData.parentId.toString(),
+        parentId: fileData.parentId,
         owner: fileData.owner
       };
     } catch (error) {
