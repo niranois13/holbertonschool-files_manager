@@ -56,7 +56,7 @@ module.exports = {
 
       const acceptedTypes = ['folder', 'file', 'image'];
       if (!acceptedTypes.includes(content.type)) {
-        return res.status(400).json({ error: 'Invalid type' });
+        return res.status(400).json({ error: 'Missing type' });
       }
 
       if (!content.parentId) {
