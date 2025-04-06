@@ -103,7 +103,6 @@ class DBClient {
         name: folderData.name,
         type: folderData.type,
         parentId: folderData.parentId,
-        isPublic: false,
       };
     } catch (error) {
       console.error('Error in createFolder:', error);
