@@ -63,7 +63,9 @@ module.exports = {
       if (!content.parentId) {
         content.parentId = '0';
         console.log('No parentId provided, defaulting to root (0)');
-      } else {
+      }
+
+      if (content.parentId !== '0') {
         try {
           console.log('Looking up parent folder:', content.parentId);
           const parentObject = await dbClient.findFileById(content.parentId);
