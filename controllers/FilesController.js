@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { xTokenHandler } = require('./AuthController');
 const { ObjectId } = require('mongodb');
+const { xTokenHandler } = require('./AuthController');
 const dbClient = require('../utils/db').default;
 
 module.exports = {

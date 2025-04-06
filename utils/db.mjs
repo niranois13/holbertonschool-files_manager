@@ -85,7 +85,7 @@ class DBClient {
         type: fileData.type,
         isPublic: fileData.isPublic,
         parentId: fileData.parentId,
-        userId: fileData.userId
+        userId: fileData.userId,
       };
     } catch (error) {
       console.error('Error in createFile:', error);
