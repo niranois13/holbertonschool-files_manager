@@ -219,7 +219,7 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
 
-      const page = req.query || '';
+      const page = req.query.page || 0;
 
       const userFile = await dbClient.findFilesByParentId(parentId, userId, page);
       if (!userFile) {

@@ -18,6 +18,21 @@ class DBClient {
     return this.client && this.client.topology && this.client.topology.isConnected();
   }
 
+  static pagination(matchEngine, skipEngine = 0, limitEngine = 20) {
+    const pipeline = [
+      {
+        $match: matchEngine,
+      },
+      {
+        $skip: skipEngine,
+      },
+      {
+        $limit: limitEngine,
+      },
+    ];
+    return pipeline;
+  }
+
   async _getCollection(collectionName) {
     await this.connected;
     return this.client.db(this.databaseName).collection(collectionName);
@@ -125,7 +140,11 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-      return await files.find({ userId }).toArray();
+
+      const matchEngine = { userId };
+      const pipeline = this.pagination(matchEngine);
+
+      return await files.aggregate(pipeline).toArray();
     } catch (error) {
       console.error('Error in findFileByUserId:', error);
       return null;
@@ -148,25 +167,13 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-      const pageSize = 20;
-      if (!page || page === '') {
-        return await files.find({ parentId, userId });
-      }
 
-      const pipeline = [
-        {
-          $match: {
-            userId,
-            parentId,
-          },
-        },
-        {
-          $skip: page * pageSize,
-        },
-        {
-          $limit: pageSize,
-        },
-      ];
+      const pageSize = 20;
+      const matchEngine = { userId, parentId };
+      const skipEngine = page * pageSize;
+      const limitEngine = pageSize;
+      const pipeline = this.pagination(matchEngine, skipEngine, limitEngine);
+
       return await files.aggregate(pipeline).toArray();
     } catch (error) {
       console.error('Error in findFileByParentId:', error);
