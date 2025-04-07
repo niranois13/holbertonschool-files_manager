@@ -220,10 +220,7 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
 
-      const page = Number(req.query) || 0;
-      if (page < 0 || isNaN(page)) {
-        page = 0;
-      }
+      const { page } = req.query || 0;
 
       console.log('Calling findFilesByParentId:');
       console.log('page:', page);
