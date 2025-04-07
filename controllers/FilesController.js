@@ -221,6 +221,10 @@ module.exports = {
 
       const page = req.query.page || 0;
 
+      console.log('Calling findFilesByParentId:');
+      console.log('page:', page);
+      console.log('parentId:', parentId);
+      console.log('userId:', userId);
       const userFile = await dbClient.findFilesByParentId(parentId, userId, page);
       if (!userFile) {
         return res.status(404).json({ error: 'Not found' });
@@ -233,9 +237,9 @@ module.exports = {
         type: file.type,
         isPublic: file.isPublic || false,
         parentId: file.parentId,
-
       }));
-
+      
+      console.log(`Number of formatted files: ${formattedFiles.length}`);
       return res.status(200).json(formattedFiles);
     } catch (error) {
       console.error('Error in getIndex:', error);
