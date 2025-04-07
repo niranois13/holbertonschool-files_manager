@@ -217,9 +217,6 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
       const page = req.params.page;
-      if (!page) {
-        page = 0;
-      }
 
       const userFile = findFilesByParentId(parentId, reqUserId, page);
       if (!userFile) {

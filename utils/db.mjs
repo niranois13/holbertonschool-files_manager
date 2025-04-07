@@ -155,7 +155,11 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-      const pageSize = 10;
+      const pageSize = 20;
+      if (!page) {
+        return await files.find({ parentId, userId });
+      }
+
       const pipeline = [
         {
           $match: {
