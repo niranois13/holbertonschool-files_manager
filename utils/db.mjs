@@ -166,10 +166,11 @@ class DBClient {
     }
   }
 
-  async findFilesByParentId(parentId, reqUserId, page) {
+  async findFilesByParentId(reqParentId, reqUserId, page) {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
+      const parentId = new ObjectId(reqParentId);
       console.log(userId);
       const pageSize = 20;
       const matchEngine = { parentId };

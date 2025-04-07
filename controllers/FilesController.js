@@ -130,7 +130,7 @@ module.exports = {
           name: newFile.name,
           type: newFile.type,
           isPublic: newFile.isPublic,
-          parentId: newFile.parentId,
+          parentId: newFile.parentId.toString(),
         });
       }
       const folderToInsert = {
@@ -178,7 +178,7 @@ module.exports = {
         name: userFile.name,
         type: userFile.type,
         isPublic: userFile.isPublic,
-        parentId: userFile.parentId,
+        parentId: userFile.parentId.toString(),
       });
     } catch (error) {
       console.error('Error in getShow:', error);
@@ -212,7 +212,7 @@ module.exports = {
           name: file.name,
           type: file.type,
           isPublic: file.isPublic || false,
-          parentId: file.parentId,
+          parentId: file.parentId.toString(),
         }));
 
         console.log('formattedFiles:', formattedFiles);
@@ -239,7 +239,7 @@ module.exports = {
         name: file.name,
         type: file.type,
         isPublic: file.isPublic || false,
-        parentId: file.parentId,
+        parentId: file.parentId.toString(),
       }));
 
       console.log(`Number of formatted files: ${formattedFiles.length}`);
