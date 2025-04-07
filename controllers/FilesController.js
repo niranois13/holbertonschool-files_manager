@@ -211,10 +211,11 @@ module.exports = {
           userId: file.userId.toString(),
           name: file.name,
           type: file.type,
+          isPublic: file.isPublic || false,
           parentId: file.parentId,
-          isPublic: file.isPublic || false
         }));
 
+        console.log('formattedFiles:', formattedFiles);
         return res.status(200).json(formattedFiles);
       }
 
@@ -230,9 +231,9 @@ module.exports = {
         userId: file.userId.toString(),
         name: file.name,
         type: file.type,
-        isPublic: file.isPublic,
+        isPublic: file.isPublic || false,
         parentId: file.parentId,
-        isPublic: file.isPublic || false
+
       }));
 
       return res.status(200).json(formattedFiles);

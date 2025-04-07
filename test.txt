@@ -1,3 +1,1 @@
-{ "_id" : ObjectId("5f1e881cc7ba06511e683b23"), "userId" : ObjectId("5f1e7cda04a394508232559d"), "name" : "images", "type" : "folder", "parentId" : "0" }
-{ "_id" : ObjectId("67f24ddc0ac433dc42d5f4ca"), "name" : "images", "type" : "folder", "isPublic" : false, "parentId" : 0, "userId" : ObjectId("67eea96d0d4b6dfaaf81e8db"), "localPath" : null }
-{ "_id" : ObjectId("67f25c049a8bfdebceff8a8f"), "name" : "testFolder", "type" : "folder", "parentId" : 0, "userId" : ObjectId("67eea96d0d4b6dfaaf81e8db") }
+ npx eslint server.js utils/*.mjs controllers/*.js routes/*.js --fix
