@@ -188,19 +188,20 @@ module.exports = {
 
   async getIndex(req, res) {
     try {
-      console.log('getShow - Checking user token...');
+      console.log('getIndex - Checking user token...');
       const userId = await xTokenHandler(req, res);
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      console.log('gestShow - User authorized:', userId);
-      const fileId = req.params.id;
-      if (!fileId) {
-        return res.status(404).json({ error: 'Not found' });
-      }
-      const parentId = req.params.parentId;
+      console.log('getIndex - User authorized:', userId);
+
+      const parentId = req.query.parentId;
+
+      console.log('parentId:', parentId);
+
       if (!parentId) {
-        const userFile = await dbClient.findFilesByUser(fileId, userId);
+        console.log('Calling findFilesByUser with userId:', userId);
+        const userFile = await dbClient.findFilesByUserId(userId);
         if (!userFile) {
           return res.status(404).json({ error: 'Not found' });
         }
@@ -216,7 +217,10 @@ module.exports = {
 
         return res.status(200).json(formattedFiles);
       }
-      const page = req.params.page;
+      const page = req.query.page;
+      if (!page) {
+        page = "";
+      }
 
       const userFile = findFilesByParentId(parentId, reqUserId, page);
       if (!userFile) {

@@ -121,9 +121,10 @@ class DBClient {
     }
   }
 
-  async findFilesByUserId(userId) {
+  async findFilesByUserId(reqUserId) {
     try {
       const files = await this._getCollection('files');
+      const userId = new ObjectId(reqUserId)
       return await files.find({ userId }).toArray();
     } catch (error) {
       console.error('Error in findFileByUserId:', error);
@@ -156,7 +157,7 @@ class DBClient {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
       const pageSize = 20;
-      if (!page) {
+      if (!page || page === "") {
         return await files.find({ parentId, userId });
       }
 
