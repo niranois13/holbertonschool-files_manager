@@ -142,7 +142,7 @@ class DBClient {
       const userId = new ObjectId(reqUserId);
 
       const matchEngine = { userId };
-      const pipeline = this.pagination(matchEngine);
+      const pipeline = DBClient.pagination(matchEngine);
 
       return await files.aggregate(pipeline).toArray();
     } catch (error) {
@@ -172,7 +172,7 @@ class DBClient {
       const matchEngine = { userId, parentId };
       const skipEngine = page * pageSize;
       const limitEngine = pageSize;
-      const pipeline = this.pagination(matchEngine, skipEngine, limitEngine);
+      const pipeline = DBClient.pagination(matchEngine, skipEngine, limitEngine);
 
       return await files.aggregate(pipeline).toArray();
     } catch (error) {
