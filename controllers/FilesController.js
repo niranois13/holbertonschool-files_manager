@@ -220,6 +220,9 @@ module.exports = {
       }
 
       const page = req.query.page || 0;
+      if (page < 0 || isNaN(page)) {
+        page = 0;
+      }
 
       console.log('Calling findFilesByParentId:');
       console.log('page:', page);
@@ -238,10 +241,6 @@ module.exports = {
         isPublic: file.isPublic || false,
         parentId: file.parentId,
       }));
-
-      if (formattedFiles.length == 0) {
-        return res.status(404).json({ error: 'Not found' });
-      }
 
       console.log(`Number of formatted files: ${formattedFiles.length}`);
       return res.status(200).json(formattedFiles);
