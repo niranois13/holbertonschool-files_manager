@@ -195,7 +195,7 @@ module.exports = {
       }
       console.log('getIndex - User authorized:', userId);
 
-      const { parentId } = req.query.parentId;
+      const { parentId } = req.query;
 
       console.log('parentId:', parentId);
 
@@ -219,7 +219,7 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
 
-      const page = Number(req.query.page || 0);
+      const page = Number(req.query.page) || 0;
       if (page < 0 || isNaN(page)) {
         page = 0;
       }
@@ -230,7 +230,7 @@ module.exports = {
       console.log('userId:', userId);
       const userFile = await dbClient.findFilesByParentId(parentId, userId, page);
       if (!userFile) {
-        return res.status(404).json([]);
+        return res.status(404).json({ error: 'Not found' });
       }
 
       const formattedFiles = userFile.map((file) => ({
