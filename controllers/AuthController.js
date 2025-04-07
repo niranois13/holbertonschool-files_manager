@@ -36,7 +36,7 @@ module.exports = {
     return res.status(200).json({ token: uuidToken });
   },
 
-  async xTokenHandler(req, res) {
+  async xTokenHandler(req) {
     const token = req.headers['x-token'];
     if (!token) {
       return null;
