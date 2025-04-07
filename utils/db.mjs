@@ -23,9 +23,9 @@ class DBClient {
       {
         $match: matchEngine,
       },
-      {
-        $sort: sortEngine,
-      },
+      // {
+      //   $sort: sortEngine,
+      // },
       {
         $skip: skipEngine,
       },
@@ -143,10 +143,12 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-      const skipEngine = page * 20;
+      const pageSize = 20;
+      const skipEngine = page * pageSize;
+      const limitEngine = pageSize;
       const matchEngine = { userId };
 
-      const pipeline = DBClient.pagination(matchEngine, skipEngine);
+      const pipeline = DBClient.pagination(matchEngine, skipEngine, limitEngine);
 
       return await files.aggregate(pipeline).toArray();
     } catch (error) {
