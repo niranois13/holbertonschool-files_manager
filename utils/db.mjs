@@ -170,9 +170,9 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-
+      console.log(userId);
       const pageSize = 20;
-      const matchEngine = { userId, parentId };
+      const matchEngine = { parentId };
       const skipEngine = page * pageSize;
       const limitEngine = pageSize;
       const pipeline = DBClient.pagination(matchEngine, skipEngine, limitEngine);
