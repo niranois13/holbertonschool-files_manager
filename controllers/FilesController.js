@@ -219,12 +219,15 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
 
-      const { page } = req.query || 0;
+      let { page } = req.query || 0;
+      if (!page || isNaN(page) || page < 0) {
+        page = 0;
+      }
 
       console.log('Calling findFilesByParentId:');
-      console.log('page:', page);
-      console.log('parentId:', parentId);
-      console.log('userId:', userId);
+      console.log('page:', page, 'typeof(page):', typeof(page));
+      console.log('parentId:', parentId, 'typeof(parentId):', typeof(parentId));
+      console.log('userId:', userId, 'typeof(userId):', typeof(userId));
       const userFile = await dbClient.findFilesByParentId(parentId, userId, page);
       if (!userFile) {
         return res.status(404).json({ error: 'Not found' });

@@ -24,13 +24,13 @@ class DBClient {
         $match: matchEngine,
       },
       {
+        $sort: sortEngine,
+      },
+      {
         $skip: skipEngine,
       },
       {
         $limit: limitEngine,
-      },
-      {
-        $sort: sortEngine,
       },
     ];
     return pipeline;
