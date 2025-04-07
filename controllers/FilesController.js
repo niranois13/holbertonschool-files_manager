@@ -196,7 +196,7 @@ module.exports = {
       console.log('getIndex - User authorized:', userId);
 
       const { parentId } = req.query;
-      let { page } = req.query || 0;
+      let { page } = parseInt(req.query, 10) || 0;
       if (!page || Number.isNaN(page) || page < 0) {
         page = 0;
       }
