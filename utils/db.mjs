@@ -31,7 +31,7 @@ class DBClient {
       },
       {
         $sort: sortEngine,
-      }
+      },
     ];
     return pipeline;
   }

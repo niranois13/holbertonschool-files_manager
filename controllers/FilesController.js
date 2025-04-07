@@ -3,7 +3,6 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const { xTokenHandler } = require('./AuthController');
-const { equal } = require('assert');
 const dbClient = require('../utils/db').default;
 
 module.exports = {
