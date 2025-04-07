@@ -3,6 +3,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const { xTokenHandler } = require('./AuthController');
+const { equal } = require('assert');
 const dbClient = require('../utils/db').default;
 
 module.exports = {
@@ -219,7 +220,7 @@ module.exports = {
         return res.status(200).json(formattedFiles);
       }
 
-      const page = Number(req.query.page) || 0;
+      const page = Number(req.query) || 0;
       if (page < 0 || isNaN(page)) {
         page = 0;
       }
