@@ -211,7 +211,6 @@ module.exports = {
           userId: file.userId.toString(),
           name: file.name,
           type: file.type,
-          isPublic: file.isPublic,
           parentId: file.parentId,
           isPublic: file.isPublic || false
         }));
