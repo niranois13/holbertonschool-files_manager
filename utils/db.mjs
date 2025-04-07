@@ -136,17 +136,43 @@ class DBClient {
       const files = await this._getCollection('files');
       const _id = new ObjectId(fileId);
       const userId = new ObjectId(reqUserId);
-      const result = await files.findOne({ _id, userId })
-      return {
-        id: result._id,
-        userId: result.userId,
-        name: result.name,
-        type: result.type,
-        isPublic: result.isPublic,
-        parentId: result.parentId
-      };
+      return await files.findOne({ _id, userId })
+      // return {
+      //   id: result._id,
+      //   userId: result.userId,
+      //   name: result.name,
+      //   type: result.type,
+      //   isPublic: result.isPublic,
+      //   parentId: result.parentId
+      // };
     } catch (error) {
       console.error('Error in findFileByUserAndId:', error);
+      return null;
+    }
+  }
+
+  async findFilesByParentId(parentId, reqUserId, page) {
+    try {
+      const files = await this._getCollection('files');
+      const userId = new ObjectId(reqUserId);
+      const pageSize = 10;
+      const pipeline = [
+        {
+          $match: {
+            userId,
+            parentId
+          }
+        },
+        {
+          $skip: page * pageSize
+        },
+        {
+          $limit: pageSize
+        }
+      ];
+      return await files.aggregate(pipeline).toArray();
+    } catch (error) {
+      console.error('Error in findFileByParentId:', error);
       return null;
     }
   }

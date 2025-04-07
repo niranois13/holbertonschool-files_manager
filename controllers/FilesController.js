@@ -172,9 +172,9 @@ module.exports = {
         return res.status(404).json({ error: 'Not found' });
       }
       console.log('getShow - userFiles:', userFile);
-      return res.status(201).json({
-        id: userFile.id,
-        userId: userFile.userId,
+      return res.status(200).json({
+        id: userFile._id.toString(),
+        userId: userFile.userId.toString(),
         name: userFile.name,
         type: userFile.type,
         isPublic: userFile.isPublic,
@@ -182,6 +182,60 @@ module.exports = {
       });
     } catch (error) {
       console.error('Error in getShow:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  async getIndex(req, res) {
+    try {
+      console.log('getShow - Checking user token...');
+      const userId = await xTokenHandler(req, res);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      console.log('gestShow - User authorized:', userId);
+      const fileId = req.params.id;
+      if (!fileId) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      const parentId = req.params.parentId;
+      if (!parentId) {
+        const userFile = await dbClient.findFilesByUser(fileId, userId);
+        if (!userFile) {
+          return res.status(404).json({ error: 'Not found' });
+        }
+
+        const formattedFiles = userFile.map(file => ({
+          id: file._id.toString(),
+          userId: file.userId.toString(),
+          name: file.name,
+          type: file.type,
+          isPublic: file.isPublic,
+          parentId: file.parentId
+        }));
+
+        return res.status(200).json(formattedFiles);
+      }
+      const page = req.params.page;
+
+      const userFile = findFilesByParentId(parentId, reqUserId, page);
+      if (!userFile) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      const formattedFiles = userFile.map(file => ({
+        id: file._id.toString(),
+        userId: file.userId.toString(),
+        name: file.name,
+        type: file.type,
+        isPublic: file.isPublic,
+        parentId: file.parentId
+      }));
+
+      return res.status(200).json(formattedFiles);
+
+    } catch (error) {
+      console.error('Error in getIndex:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }

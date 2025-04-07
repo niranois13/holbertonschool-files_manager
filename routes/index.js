@@ -32,9 +32,9 @@ module.exports = (app) => {
     FilesController.getShow(req, res);
   });
 
-  // app.get('/files', (req, res) => {
-  //   FilesController.getIndex(req, res);
-  // });
+  app.get('/files', (req, res) => {
+    FilesController.getIndex(req, res);
+  });
 
   app.post('/users', (req, res) => {
     UsersController.postNew(req, res);
