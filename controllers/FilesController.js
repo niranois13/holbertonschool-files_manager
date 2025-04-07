@@ -216,6 +216,7 @@ module.exports = {
         }));
 
         console.log('formattedFiles:', formattedFiles);
+        console.log('Number of files:', formattedFiles.length);
         return res.status(200).json(formattedFiles);
       }
 
