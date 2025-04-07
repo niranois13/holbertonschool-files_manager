@@ -139,7 +139,7 @@ class DBClient {
     }
   }
 
-  async findFilesByUserId(reqUserId) {
+  async findFilesByUserId(reqUserId, page) {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
