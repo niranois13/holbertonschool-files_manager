@@ -18,7 +18,7 @@ class DBClient {
     return this.client && this.client.topology && this.client.topology.isConnected();
   }
 
-  static pagination(matchEngine, skipEngine = 0, limitEngine = 20) {
+  static pagination(matchEngine, skipEngine = 0, limitEngine = 20, sortEngine = { _id: 1 }) {
     const pipeline = [
       {
         $match: matchEngine,
@@ -29,6 +29,9 @@ class DBClient {
       {
         $limit: limitEngine,
       },
+      {
+        $sort: sortEngine,
+      }
     ];
     return pipeline;
   }
