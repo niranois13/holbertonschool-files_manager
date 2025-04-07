@@ -143,9 +143,10 @@ class DBClient {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
-
+      const skipEngine = page * 20;
       const matchEngine = { userId };
-      const pipeline = DBClient.pagination(matchEngine);
+
+      const pipeline = DBClient.pagination(matchEngine, skipEngine);
 
       return await files.aggregate(pipeline).toArray();
     } catch (error) {

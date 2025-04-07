@@ -201,7 +201,7 @@ module.exports = {
 
       if (!parentId) {
         console.log('Calling findFilesByUser with userId:', userId);
-        const userFile = await dbClient.findFilesByUserId(userId);
+        const userFile = await dbClient.findFilesByUserId(userId, page);
         if (!userFile) {
           return res.status(404).json({ error: 'Not found' });
         }
