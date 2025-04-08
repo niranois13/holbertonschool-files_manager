@@ -266,11 +266,19 @@ module.exports = {
       }
       console.log('fileId:', fileId);
 
+      console.log('Calling publishFile')
       const userFile = await dbClient.publishFile(fileId, userId);
       if (!userFile) {
         return res.status(404).json({ error: 'Not found' });
       }
-      console.log('userFile:', userFile._id);
+      console.log('Sending response:', {
+        id: userFile._id.toString(),
+        userId: userFile.userId.toString(),
+        name: userFile.name,
+        type: userFile.type,
+        isPublic: userFile.isPublic,
+        parentId: userFile.parentId === '0' ? 0 : userFile.parentId.toString(),
+      });
       return res.status(200).json({
         id: userFile._id.toString(),
         userId: userFile.userId.toString(),
