@@ -204,7 +204,7 @@ class DBClient {
       const file = await files.findOne(filter);
       console.log('[publishFile] File found:', file);
   
-      if (!file || file.type === 'folder') {
+      if (!file) {
         console.log('[publishFile] File not found or is a folder');
         return null;
       }
