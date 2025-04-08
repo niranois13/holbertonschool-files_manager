@@ -195,19 +195,21 @@ class DBClient {
       const _id = new ObjectId(reqFileId);
       const filter = { userId, _id };
 
-      const file = files.findOne({ filter });
+      const file = await files.findOne(filter);
       if (!file || file.type === 'folder') {
         return null;
       }
 
-      const isPublicSwitch = file.isPublic;
+      const isPublicSwitch = !file.isPublic;
       const updateFile = {
         $set: {
           isPublic: isPublicSwitch,
         },
       };
 
-      return await files.updateOne(filter, updateFile);
+      await files.updateOne(filter, updateFile);
+      
+      return await files.findOne(filter);
     } catch (error) {
       console.error('Error in updateIsPublic:', error);
       return null;

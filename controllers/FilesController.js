@@ -262,14 +262,15 @@ module.exports = {
 
       const fileId = req.params.id;
       if (!fileId) {
-        return res.status(404).json({ error: 'Not foud' });
+        return res.status(404).json({ error: 'Not found' });
       }
+      console.log('fileId:', fileId);
 
       const userFile = await dbClient.updateIsPublic(fileId, userId);
       if (!userFile) {
         return res.status(404).json({ error: 'Not foud' });
       }
-
+      console.log('userFile:', userFile._id);
       return res.status(200).json({
         id: userFile._id.toString(),
         userId: userFile.userId.toString(),
