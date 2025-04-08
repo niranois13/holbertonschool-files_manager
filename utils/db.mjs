@@ -235,7 +235,7 @@ class DBClient {
       const filter = { userId, _id };
 
       const file = await files.findOne(filter);
-      if (!file || file.type === 'folder') {
+      if (!file) {
         return null;
       }
 

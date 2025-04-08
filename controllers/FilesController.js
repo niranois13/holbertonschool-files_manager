@@ -314,7 +314,7 @@ module.exports = {
         name: userFile.name,
         type: userFile.type,
         isPublic: userFile.isPublic,
-        parentId: userFile.parentId.toString(),
+        parentId: userFile.parentId === '0' ? 0 : userFile.parentId.toString(),
       });
     } catch (error) {
       console.error('Error in putUnpublish:', error);
