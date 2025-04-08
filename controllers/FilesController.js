@@ -266,9 +266,9 @@ module.exports = {
       }
       console.log('fileId:', fileId);
 
-      const userFile = await dbClient.updateIsPublic(fileId, userId);
+      const userFile = await dbClient.publishFile(fileId, userId);
       if (!userFile) {
-        return res.status(404).json({ error: 'Not foud' });
+        return res.status(404).json({ error: 'Not found' });
       }
       console.log('userFile:', userFile._id);
       return res.status(200).json({
@@ -296,12 +296,12 @@ module.exports = {
 
       const fileId = req.params.id;
       if (!fileId) {
-        return res.status(404).json({ error: 'Not foud' });
+        return res.status(404).json({ error: 'Not found' });
       }
 
-      const userFile = await dbClient.updateIsPublic(fileId, userId);
+      const userFile = await dbClient.unpublishFile(fileId, userId);
       if (!userFile) {
-        return res.status(404).json({ error: 'Not foud' });
+        return res.status(404).json({ error: 'Not found' });
       }
 
       return res.status(200).json({

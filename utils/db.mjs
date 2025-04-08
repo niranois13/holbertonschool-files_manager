@@ -188,7 +188,7 @@ class DBClient {
     }
   }
 
-  async updateIsPublic(reqFileId, reqUserId) {
+  async publishFile(reqFileId, reqUserId) {
     try {
       const files = await this._getCollection('files');
       const userId = new ObjectId(reqUserId);
@@ -200,10 +200,36 @@ class DBClient {
         return null;
       }
 
-      const isPublicSwitch = !file.isPublic;
       const updateFile = {
         $set: {
-          isPublic: isPublicSwitch,
+          isPublic: true,
+        },
+      };
+
+      await files.updateOne(filter, updateFile);
+      
+      return await files.findOne(filter);
+    } catch (error) {
+      console.error('Error in updateIsPublic:', error);
+      return null;
+    }
+  }
+
+  async unpublishFile(reqFileId, reqUserId) {
+    try {
+      const files = await this._getCollection('files');
+      const userId = new ObjectId(reqUserId);
+      const _id = new ObjectId(reqFileId);
+      const filter = { userId, _id };
+
+      const file = await files.findOne(filter);
+      if (!file || file.type === 'folder') {
+        return null;
+      }
+
+      const updateFile = {
+        $set: {
+          isPublic: false,
         },
       };
 
