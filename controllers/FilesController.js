@@ -253,20 +253,16 @@ module.exports = {
 
   async putPublish(req, res) {
     try {
-      console.log('putPublish - Checking user token...');
       const userId = await xTokenHandler(req, res);
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      console.log('putPublish - User authorized:', userId);
 
       const fileId = req.params.id;
       if (!fileId) {
         return res.status(404).json({ error: 'Not found' });
       }
-      console.log('fileId:', fileId);
 
-      console.log('Calling publishFile')
       const userFile = await dbClient.publishFile(fileId, userId);
       if (!userFile) {
         return res.status(404).json({ error: 'Not found' });
@@ -288,7 +284,7 @@ module.exports = {
         parentId: userFile.parentId === '0' ? 0 : userFile.parentId.toString(),
       });
     } catch (error) {
-      console.error('Error in putUnpublish:', error);
+      console.error('Error in putPublish:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
