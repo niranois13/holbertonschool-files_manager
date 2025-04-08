@@ -277,10 +277,10 @@ module.exports = {
         name: userFile.name,
         type: userFile.type,
         isPublic: userFile.isPublic,
-        parentId: userFile.parentId.toString(),
+        parentId: userFile.parentId,
       });
     } catch (error) {
-      console.error('Error in putPublish:', error);
+      console.error('Error in putUnpublish:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },

@@ -48,7 +48,7 @@ module.exports = (app) => {
     FilesController.putPublish(req, res);
   });
 
-  app.put('files/:id/unpublish', (req, res) => {
+  app.put('/files/:id/unpublish', (req, res) => {
     FilesController.putUnpublish(req, res);
   });
 };
