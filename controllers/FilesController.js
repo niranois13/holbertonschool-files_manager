@@ -240,7 +240,7 @@ module.exports = {
         name: file.name,
         type: file.type,
         isPublic: file.isPublic || false,
-        parentId: file.parentId.toString(),
+        parentId: userFile.parentId === '0' ? 0 : userFile.parentId.toString(),
       }));
 
       console.log(`Number of formatted files: ${formattedFiles.length}`);
@@ -277,7 +277,7 @@ module.exports = {
         name: userFile.name,
         type: userFile.type,
         isPublic: userFile.isPublic,
-        parentId: userFile.parentId,
+        parentId: userFile.parentId === '0' ? 0 : userFile.parentId.toString(),
       });
     } catch (error) {
       console.error('Error in putUnpublish:', error);
