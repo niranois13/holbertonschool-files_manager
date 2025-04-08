@@ -216,7 +216,6 @@ class DBClient {
       };
   
       const result = await files.updateOne(filter, updateFile);
-      console.log('[publishFile] Update result:', result);
   
       const updatedFile = await files.findOne(filter);
       console.log('[publishFile] Updated file:', updatedFile);
