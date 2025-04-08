@@ -43,4 +43,12 @@ module.exports = (app) => {
   app.post('/files', (req, res) => {
     FilesController.postUpload(req, res);
   });
+
+  app.put('files/:id/publish', (req, res) => {
+    FilesController.putPublish(req, res);
+  });
+
+  app.put('files/:id/publish', (req, res) => {
+    FilesController.putUnpublish(req, res);
+  });
 };

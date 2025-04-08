@@ -23,9 +23,9 @@ class DBClient {
       {
         $match: matchEngine,
       },
-      // {
-      //   $sort: sortEngine,
-      // },
+      {
+        $sort: sortEngine,
+      },
       {
         $skip: skipEngine,
       },
@@ -184,6 +184,32 @@ class DBClient {
       return await files.aggregate(pipeline).toArray();
     } catch (error) {
       console.error('Error in findFileByParentId:', error);
+      return null;
+    }
+  }
+
+  async updateIsPublic(reqFileId, reqUserId) {
+    try {
+      const files = await this._getCollection('files');
+      const userId = new ObjectId(reqUserId);
+      const _id = new ObjectId(reqFileId);
+      const filter = { userId, _id };
+
+      const file = files.findOne({ filter });
+      if (!file || file.type === 'folder') {
+        return null;
+      }
+
+      const isPublicSwitch = file.isPublic;
+      const updateFile = {
+        $set: {
+          isPublic: isPublicSwitch,
+        },
+      };
+
+      return await files.updateOne(filter, updateFile);
+    } catch (error) {
+      console.error('Error in updateIsPublic:', error);
       return null;
     }
   }

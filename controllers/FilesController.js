@@ -250,4 +250,70 @@ module.exports = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  async putPublish(req, res) {
+    try {
+      console.log('putPublish - Checking user token...');
+      const userId = await xTokenHandler(req, res);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      console.log('putPublish - User authorized:', userId);
+
+      const fileId = req.params.id;
+      if (!fileId) {
+        return res.status(404).json({ error: 'Not foud' });
+      }
+
+      const userFile = await dbClient.updateIsPublic(fileId, userId);
+      if (!userFile) {
+        return res.status(404).json({ error: 'Not foud' });
+      }
+
+      return res.status(200).json({
+        id: userFile._id.toString(),
+        userId: userFile.userId.toString(),
+        name: userFile.name,
+        type: userFile.type,
+        isPublic: userFile.isPublic,
+        parentId: userFile.parentId.toString(),
+      });
+    } catch (error) {
+      console.error('Error in putPublish:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  async putUnpublish(req, res) {
+    try {
+      console.log('putUnpublish - Checking user token...');
+      const userId = await xTokenHandler(req, res);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      console.log('putUnpublish - User authorized:', userId);
+
+      const fileId = req.params.id;
+      if (!fileId) {
+        return res.status(404).json({ error: 'Not foud' });
+      }
+
+      const userFile = await dbClient.updateIsPublic(fileId, userId);
+      if (!userFile) {
+        return res.status(404).json({ error: 'Not foud' });
+      }
+
+      return res.status(200).json({
+        id: userFile._id.toString(),
+        userId: userFile.userId.toString(),
+        name: userFile.name,
+        type: userFile.type,
+        isPublic: userFile.isPublic,
+        parentId: userFile.parentId.toString(),
+      });
+    } catch (error) {
+      console.error('Error in putUnpublish:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 };
