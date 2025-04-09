@@ -1,8 +1,8 @@
+import mime from 'mime-types';
+import fs from 'fs';
 import pkg from 'mongodb';
 
 const { MongoClient, ObjectId } = pkg;
-const mime = require('mime-types');
-const fs = require('fs');
 
 class DBClient {
   constructor() {
