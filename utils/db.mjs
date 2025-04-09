@@ -164,6 +164,9 @@ class DBClient {
       }
 
       const filePath = file.localPath;
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'Not found' });
+      }
       const mimeType = mime.lookup(file.name) || 'application/octet-stream';
       const fileData = fs.readFileSync(filePath);
 
