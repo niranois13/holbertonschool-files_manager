@@ -324,7 +324,7 @@ module.exports = {
 
   async getFile(req, res) {
     try {
-      console.log('Entering getFile...')
+      console.log('Entering getFile...');
       const fileId = req.params.id;
       if (!fileId) {
         return res.status(400).json({ error: 'Bad request' });
