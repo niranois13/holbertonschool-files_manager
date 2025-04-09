@@ -324,6 +324,7 @@ module.exports = {
 
   async getFile(req, res) {
     try {
+      console.log('Entering getFile...')
       const fileId = req.params.id;
       if (!fileId) {
         return res.status(404).json({ error: 'Not found' });
@@ -341,7 +342,7 @@ module.exports = {
       res.setHeader('Content-Type', fileContent.mime);
       return res.status(200).send(fileContent.data);
     } catch (error) {
-      console.error('Error in getData:', error);
+      console.error('Error in getFile:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
