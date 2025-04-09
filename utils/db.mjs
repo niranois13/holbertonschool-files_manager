@@ -147,9 +147,6 @@ class DBClient {
       if (!file) {
         return ('No file found');
       }
-      if (file.type === 'folder') {
-        return ('Folder found');
-      }
       if (!file.isPublic) {
         if (!reqUserId) {
           return ('No file found');
@@ -157,11 +154,15 @@ class DBClient {
         const userId = new ObjectId(reqUserId);
         if (!userId.equals(file.userId)) {
           return ('No file found');
+        } else {
+          if (file.type === 'folder') {
+            return ('Folder found');
+          }
         }
       }
-      // if (file.isPublic && file.type === 'folder') {
-      //   return ('Folder found');
-      // }
+      if (file.isPublic && file.type === 'folder') {
+        return ('Folder found');
+      }
       if (!file.localPath) {
         return ('No file found');
       }
