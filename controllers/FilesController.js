@@ -327,7 +327,7 @@ module.exports = {
       console.log('Entering getFile...')
       const fileId = req.params.id;
       if (!fileId) {
-        return res.status(404).json({ error: 'Not found' });
+        return res.status(400).json({ error: 'Bad request' });
       }
 
       const reqUserId = await xTokenHandler(req, res);
