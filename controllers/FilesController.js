@@ -322,7 +322,7 @@ module.exports = {
     }
   },
 
-  async getData(req, res) {
+  async getFile(req, res) {
     try {
       const fileId = req.params.id;
       if (!fileId) {
