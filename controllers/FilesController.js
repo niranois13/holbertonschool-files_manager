@@ -321,4 +321,28 @@ module.exports = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  async getData(req, res) {
+    try {
+      const fileId = req.params.id;
+      if (!fileId) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      const reqUserId = await xTokenHandler(req, res);
+
+      const fileContent = await dbClient.findDataById(fileId, reqUserId);
+      if (fileContent === 'No file found') {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      if (fileContent === 'Folder found') {
+        return res.status(400).json({ error: 'A folder doesn\'t have content' });
+      }
+      res.setHeader('Content-Type', fileContent.mime);
+      return res.status(200).send(fileContent.data);
+    } catch (error) {
+      console.error('Error in getData:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 };

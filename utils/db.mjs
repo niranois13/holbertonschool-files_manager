@@ -1,6 +1,8 @@
 import pkg from 'mongodb';
 
 const { MongoClient, ObjectId } = pkg;
+const mime = require('mime-types');
+const fs = require('fs');
 
 class DBClient {
   constructor() {
@@ -139,6 +141,44 @@ class DBClient {
     }
   }
 
+  async findDataById(fileId, reqUserId) {
+    try {
+      const file = await this.findFileById(fileId);
+      if (!file) {
+        return ('No file found');
+      }
+      if (!file.isPublic) {
+        if (!reqUserId) {
+          return ('No file found');
+        }
+        const userId = new ObjectId(reqUserId);
+        if (!userId.equals(file.userId)) {
+          return ('No file found');
+        }
+      }
+      if (!file.localPath) {
+        return ('No file found');
+      }
+      if (file.type === 'folder') {
+        return ('Folder found');
+      }
+
+      const filePath = file.localPath;
+      const mimeType = mime.lookup(file.name) || 'application/octet-stream';
+      const fileData = fs.readFileSync(filePath);
+
+      const fileContent = {
+        data: fileData,
+        mime: mimeType,
+      };
+
+      return (fileContent);
+    } catch (error) {
+      console.error('Error in findDataById:', error);
+      return null;
+    }
+  }
+
   async findFilesByUserId(reqUserId, page) {
     try {
       const files = await this._getCollection('files');
@@ -191,35 +231,35 @@ class DBClient {
   async publishFile(reqFileId, reqUserId) {
     try {
       console.log('[publishFile] Start - reqFileId:', reqFileId, 'reqUserId:', reqUserId);
-  
+
       const files = await this._getCollection('files');
       console.log('[publishFile] Retrieved files collection');
-  
+
       const userId = new ObjectId(reqUserId);
       const _id = new ObjectId(reqFileId);
       const filter = { userId, _id };
-  
+
       console.log('[publishFile] Filter for query:', filter);
-  
+
       const file = await files.findOne(filter);
       console.log('[publishFile] File found:', file);
-  
+
       if (!file) {
         console.log('[publishFile] File not found or is a folder');
         return null;
       }
-  
+
       const updateFile = {
         $set: {
           isPublic: true,
         },
       };
-  
+
       await files.updateOne(filter, updateFile);
-  
+
       const updatedFile = await files.findOne(filter);
       console.log('[publishFile] Updated file:', updatedFile);
-  
+
       return updatedFile;
     } catch (error) {
       console.error('[publishFile] Error in publishFile:', error);
@@ -246,7 +286,7 @@ class DBClient {
       };
 
       await files.updateOne(filter, updateFile);
-      
+
       return await files.findOne(filter);
     } catch (error) {
       console.error('Error in updateIsPublic:', error);

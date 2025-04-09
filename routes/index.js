@@ -51,4 +51,8 @@ module.exports = (app) => {
   app.put('/files/:id/unpublish', (req, res) => {
     FilesController.putUnpublish(req, res);
   });
+
+  app.get('/files/:id/data', (req, res) => {
+    FilesController.getFile(req, res);
+  });
 };
