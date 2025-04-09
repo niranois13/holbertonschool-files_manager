@@ -147,6 +147,9 @@ class DBClient {
       if (!file) {
         return ('No file found');
       }
+      if (file.type === 'folder') {
+        return ('Folder found');
+      }
       if (!file.isPublic) {
         if (!reqUserId) {
           return ('No file found');
@@ -156,9 +159,9 @@ class DBClient {
           return ('No file found');
         }
       }
-      if (file.isPublic && file.type === 'folder') {
-        return ('Folder found');
-      }
+      // if (file.isPublic && file.type === 'folder') {
+      //   return ('Folder found');
+      // }
       if (!file.localPath) {
         return ('No file found');
       }
