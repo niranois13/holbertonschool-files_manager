@@ -333,6 +333,7 @@ module.exports = {
       const reqUserId = await xTokenHandler(req, res);
 
       const fileContent = await dbClient.findDataById(fileId, reqUserId);
+      console.log('fileContent:', fileContent);
       if (fileContent === 'No file found') {
         return res.status(404).json({ error: 'Not found' });
       }
