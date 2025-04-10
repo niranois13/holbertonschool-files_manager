@@ -154,10 +154,9 @@ class DBClient {
         const userId = new ObjectId(reqUserId);
         if (!userId.equals(file.userId)) {
           return ('No file found');
-        } else {
-          if (file.type === 'folder') {
-            return ('Folder found');
-          }
+        }
+        if (file.type === 'folder') {
+          return ('Folder found');
         }
       }
       if (file.isPublic && file.type === 'folder') {

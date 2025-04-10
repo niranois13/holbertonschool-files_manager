@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const { xTokenHandler } = require('./AuthController');
 const dbClient = require('../utils/db').default;
+const fileQueue = require('../worker');
 
 module.exports = {
   async contentTypeHandler(req) {
@@ -99,14 +100,10 @@ module.exports = {
 
       if (content.type !== 'folder') {
         console.log('Saving file to disk...');
-        if (content.type === 'image') {
-          await fileQueue.add({ fileId: content._id, userId });
-        }
         const filePath = await this.saveToDisk(content.data);
         if (!filePath) {
           return res.status(500).json({ error: 'Failed to save file on disk' });
         }
-        console.log('File saved to:', filePath);
         content.localPath = filePath;
 
         const fileToInsert = {
@@ -124,6 +121,11 @@ module.exports = {
           console.error('createFile returned null');
           return res.status(500).json({ error: 'DB insertion returned null' });
         }
+        if (content.type === 'image') {
+          console.log('Adding to fileQueue:', newFile._id, newFile.userId);
+          await fileQueue.add({ fileId: newFile._id, userId: newFile.userId });
+        }
+        console.log('File saved to:', filePath);
 
         console.log('File inserted into DB:', newFile);
 
