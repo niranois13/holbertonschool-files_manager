@@ -99,6 +99,9 @@ module.exports = {
 
       if (content.type !== 'folder') {
         console.log('Saving file to disk...');
+        if (content.type === 'image') {
+          await fileQueue.add({ fileId: content._id, userId });
+        }
         const filePath = await this.saveToDisk(content.data);
         if (!filePath) {
           return res.status(500).json({ error: 'Failed to save file on disk' });
